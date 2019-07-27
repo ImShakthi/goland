@@ -2,6 +2,8 @@
 all: help
 
 APP=goland
+ALL_PACKAGES=$(shell go list ./... | grep -v "vendor")
+VERSION?=1.0
 
 BUILD?=$(shell git describe --tags --always --dirty)
 DEP:=$(shell command -v dep 2> /dev/null)
@@ -76,7 +78,7 @@ build-deps: ## Install dependencies
 run: compile ## Build and start app locally (outside docker)
 	GIN_MODE=debug PORT=$(PORT) $(APP_EXECUTABLE)
 
-build: fmt compile #test analyze
+build: fmt analyze compile #test
 
 fmt: ## Run the code formatter
 	$(GOBIN) fmt $(ALL_PACKAGES)
@@ -85,9 +87,8 @@ test: generate-docs generate-mocks ## Run tests
 	mkdir -p $(REPORTS_DIR)
 	GIN_MODE=test $(GOBIN) test $(ALL_PACKAGES) -v -coverprofile ./$(REPORTS_DIR)/coverage
 
-compile: #generate-docs ## Build the app
+compile: generate-docs ## Build the app
 	$(GOBIN) build -ldflags  -o $(APP_EXECUTABLE) ./
-#	"-s -w -X authentication-service/src/services.DeployedBuild=$(bamboo_buildNumber) -X authentication-service/src/services.DeployedCommit=$(bamboo_repository_revision_number)"
 
 
 generate-mocks: ## Generate mocks to be used only for unit testing
@@ -99,7 +100,7 @@ generate-mocks: ## Generate mocks to be used only for unit testing
 analyze: generate-docs lint gosec
 
 generate-docs:  ## Generates the static files to be embedded into the application + swagger.json
-	swagger generate spec -b ./src -o ./bin/swagger.json --scan-models
+	swagger generate spec -b ./ -o ./bin/swagger.json --scan-models
 
 lint: ## Run the code linter
 	golangci-lint run

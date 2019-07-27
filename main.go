@@ -18,7 +18,6 @@ func main() {
 
 func configureLogging() *log.JSONFormatter {
 	formatter := new(log.JSONFormatter)
-	formatter.TimestampFormat = "01-01-2006 00:00:00"
 	formatter.PrettyPrint = true
 	log.SetFormatter(formatter)
 	log.SetOutput(os.Stdout)

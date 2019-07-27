@@ -2,14 +2,19 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/imshakthi/goland/controller"
+	"github.com/imshakthi/goland/controllers"
+	"github.com/imshakthi/goland/services"
 	"net/http"
 )
 
 func Init() *gin.Engine {
 	router := gin.Default()
 
-	helloController := controller.NewHelloController()
+	// service
+	helloService := services.NewHelloService()
+
+	// controller
+	helloController := controllers.NewHelloController(helloService)
 
 	authGroup := router.Group("/app")
 	{

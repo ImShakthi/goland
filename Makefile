@@ -1,0 +1,111 @@
+.PHONY: all
+all: help
+
+APP=goland
+
+BUILD?=$(shell git describe --tags --always --dirty)
+DEP:=$(shell command -v dep 2> /dev/null)
+DELVE:=$(shell command -v dlv 2> /dev/null)
+GOLINT:=$(shell command -v golangci-lint 2> /dev/null)
+GOSEC:=$(shell command -v gosec 2> /dev/null)
+GLICE:=$(shell command -v glice 2> /dev/null)
+GOJUNITCOVER:=$(shell command -v go-junit-report 2> /dev/null)
+GOMOCKGEN:=$(shell command -v mockgen 2> /dev/null)
+SWAGGER:=$(shell command -v swagger 2> /dev/null)
+RICHGO=$(shell command -v richgo 2> /dev/null)
+
+BIN_DIR=bin
+APP_EXECUTABLE=./$(BIN_DIR)/$(APP)
+REPORTS_DIR=reports
+PERF_REPORTS_DIR=perf-reports
+
+PROTOCOL?=https
+PORT?=8000
+HOSTNAME?=localhost
+APP_URL=$(PROTOCOL)://$(HOSTNAME):$(PORT)/
+
+ifeq ($(RICHGO),)
+	GOBIN=go
+else
+	GOBIN=richgo
+endif
+
+setup: ## Setup necessary dependencies and folder structure
+ifndef DEP
+	curl -sfL https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+endif
+ifndef GOLINT
+	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v1.16.0
+endif
+ifndef GOCOVER
+	$(GOBIN) get golang.org/x/tools/cmd/cover
+endif
+ifndef GOJUNITCOVER
+	$(GOBIN) get github.com/jstemmer/go-junit-report
+endif
+ifndef GOSEC
+	curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(GOPATH)/bin 1.3.0
+endif
+ifndef GLICE
+	$(GOBIN) get github.com/ribice/glice
+	$(GOBIN) install github.com/ribice/glice
+endif
+ifndef GOMOCKGEN
+	$(GOBIN) get github.com/golang/mock/gomock
+	$(GOBIN) install github.com/golang/mock/mockgen
+endif
+ifndef SWAGGER
+	curl -sfL https://github.com/go-swagger/go-swagger/releases/download/v0.19.0/swagger_linux_amd64 -o $(GOPATH)/bin/swagger
+	chmod +x $(GOPATH)/bin/swagger
+endif
+
+
+help:
+	echo "Help will be updated soon..."
+
+clean:
+	$(GOBIN) clean -r -cache -testcache
+	rm -rf $(APP_EXECUTABLE) $(REPORTS_DIR)/* $(PERF_REPORTS_DIR) /generated_mocks *.out *.log
+
+update-deps: ## Update dependencies
+	dep ensure -update
+
+build-deps: ## Install dependencies
+	dep ensure -v
+
+run: compile ## Build and start app locally (outside docker)
+	GIN_MODE=debug PORT=$(PORT) $(APP_EXECUTABLE)
+
+build: fmt compile #test analyze
+
+fmt: ## Run the code formatter
+	$(GOBIN) fmt $(ALL_PACKAGES)
+
+test: generate-docs generate-mocks ## Run tests
+	mkdir -p $(REPORTS_DIR)
+	GIN_MODE=test $(GOBIN) test $(ALL_PACKAGES) -v -coverprofile ./$(REPORTS_DIR)/coverage
+
+compile: #generate-docs ## Build the app
+	$(GOBIN) build -ldflags  -o $(APP_EXECUTABLE) ./
+#	"-s -w -X authentication-service/src/services.DeployedBuild=$(bamboo_buildNumber) -X authentication-service/src/services.DeployedCommit=$(bamboo_repository_revision_number)"
+
+
+generate-mocks: ## Generate mocks to be used only for unit testing
+	rm -rf ./generated_mocks
+	mkdir -p ./generated_mocks
+	# Application mocks
+#	mockgen -source=./controller/hello.go -destination=./src/generated_mocks/<filename> -package=generated_mocks
+
+analyze: generate-docs lint gosec
+
+generate-docs:  ## Generates the static files to be embedded into the application + swagger.json
+	swagger generate spec -b ./src -o ./bin/swagger.json --scan-models
+
+lint: ## Run the code linter
+	golangci-lint run
+
+gosec:
+	mkdir -p $(REPORTS_DIR)
+	echo 'gosec -fmt=text -out=$(REPORTS_DIR)/gosec-report.txt ./...'
+
+

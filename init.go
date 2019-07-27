@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/imshakthi/goland/controllers"
-	"github.com/imshakthi/goland/services"
+	"goland/controllers"
+	"goland/services"
 	"net/http"
 )
 

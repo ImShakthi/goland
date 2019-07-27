@@ -1,2 +1,5 @@
 .idea/
 vendor/
+bin/
+generated_mocks/
+reports/

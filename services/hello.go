@@ -1,5 +1,7 @@
 package services
 
+import "goland/constants"
+
 type HelloService interface {
 	Hello() string
 }
@@ -12,5 +14,5 @@ func NewHelloService() HelloService {
 }
 
 func (service *helloService) Hello() string {
-	return "Hello world!"
+	return constants.HelloWorld
 }

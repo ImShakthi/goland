@@ -78,7 +78,7 @@ build-deps: ## Install dependencies
 run: compile ## Build and start app locally (outside docker)
 	GIN_MODE=debug PORT=$(PORT) $(APP_EXECUTABLE)
 
-build: fmt analyze compile #test
+build: fmt test analyze compile
 
 fmt: ## Run the code formatter
 	$(GOBIN) fmt $(ALL_PACKAGES)
@@ -88,14 +88,15 @@ test: generate-docs generate-mocks ## Run tests
 	GIN_MODE=test $(GOBIN) test $(ALL_PACKAGES) -v -coverprofile ./$(REPORTS_DIR)/coverage
 
 compile: generate-docs ## Build the app
-	$(GOBIN) build -ldflags  -o $(APP_EXECUTABLE) ./
+	$(GOBIN) build -i -o $(APP_EXECUTABLE)
 
 
 generate-mocks: ## Generate mocks to be used only for unit testing
 	rm -rf ./generated_mocks
 	mkdir -p ./generated_mocks
 	# Application mocks
-#	mockgen -source=./controller/hello.go -destination=./src/generated_mocks/<filename> -package=generated_mocks
+	mockgen -source=./controllers/hello.go -destination=./generated_mocks/hello.go -package=generated_mocks
+	mockgen -source=./services/hello.go -destination=./generated_mocks/hello.go -package=generated_mocks
 
 analyze: generate-docs lint gosec
 

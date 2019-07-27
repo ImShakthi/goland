@@ -60,7 +60,9 @@ ifndef SWAGGER
 	curl -sfL https://github.com/go-swagger/go-swagger/releases/download/v0.19.0/swagger_linux_amd64 -o $(GOPATH)/bin/swagger
 	chmod +x $(GOPATH)/bin/swagger
 endif
-
+ifndef DELVE
+	CGO_ENABLED=1 $(GOBIN) get github.com/go-delve/delve/cmd/dlv
+endif
 
 help:
 	@grep -E '^[a-zA-Z._-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

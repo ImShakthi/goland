@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func Init() *gin.Engine {
+func InitiateRoutes() *gin.Engine {
 	router := gin.Default()
 
 	// service
@@ -18,6 +18,11 @@ func Init() *gin.Engine {
 
 	authGroup := router.Group("/app")
 	{
+		// swagger:route GET /app/hello
+		// Return Hello World as response.
+		// StatusCode 200: Message is fetched successfully
+		// responses:
+		//  200: string
 		authGroup.GET("/hello", helloController.HelloWorld)
 	}
 

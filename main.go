@@ -9,7 +9,7 @@ import (
 func main() {
 	configureLogging()
 
-	router := Init()
+	router := InitiateRoutes()
 	err := router.Run()
 	if err != nil {
 		log.Error("Server startup failed due to ", err)

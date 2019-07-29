@@ -14,7 +14,6 @@ Goland is a simple web server built in golang using gin web framework.
 #### Features
 Following are the list of features supported in Goland.
 ```bash
-build-deps                     Install dependencies
 compile                        Build the app
 fmt                            Run the code formatter
 generate-docs                  Generates the static files to be embedded into the application + swagger.json
@@ -23,7 +22,6 @@ lint                           Run the code linter
 run                            Build and start app locally (outside docker)
 setup                          Setup necessary dependencies and folder structure
 test                           Run tests
-update-deps                    Update dependencies
 ```
 
 #### Installation

@@ -29,7 +29,7 @@ To setup Goland web server use the following command, this uses the Makefile wit
 configuration.
 
 ```bash
-make setup build-deps build && echo $?
+make setup build && echo $?
 ```
 
 #### Run the server

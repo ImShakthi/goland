@@ -6,7 +6,6 @@ ALL_PACKAGES=$(shell go list ./... | grep -v "vendor")
 VERSION?=1.0
 
 BUILD?=$(shell git describe --tags --always --dirty)
-DEP:=$(shell command -v dep 2> /dev/null)
 DELVE:=$(shell command -v dlv 2> /dev/null)
 GOLINT:=$(shell command -v golangci-lint 2> /dev/null)
 GOSEC:=$(shell command -v gosec 2> /dev/null)
@@ -33,9 +32,6 @@ else
 endif
 
 setup: ## Setup necessary dependencies and folder structure
-ifndef DEP
-	curl -sfL https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-endif
 ifndef GOLINT
 	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin v1.16.0
 endif
@@ -70,12 +66,6 @@ help:
 clean:
 	$(GOBIN) clean -r -cache -testcache
 	rm -rf $(APP_EXECUTABLE) $(REPORTS_DIR)/* $(PERF_REPORTS_DIR) /generated_mocks *.out *.log
-
-update-deps: ## Update dependencies
-	dep ensure -update
-
-build-deps: ## Install dependencies
-	dep ensure -v
 
 run: compile ## Build and start app locally (outside docker)
 	GIN_MODE=debug PORT=$(PORT) $(APP_EXECUTABLE)

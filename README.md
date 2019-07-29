@@ -8,7 +8,6 @@ Goland is a simple web server built in golang using gin web framework.
 |[gin](https://github.com/gin-gonic/gin)| Web frame work|
 |[logrus](https://github.com/sirupsen/logrus)|Structured logger |
 |[gomock](https://github.com/golang/mock)|Mocking framework for testing|
-|[dep](https://github.com/golang/dep)|Dependency management tool|
 |[dlv](https://github.com/go-delve/delve/tree/master/cmd/dlv)|Debugger|
 |[swagger](https://github.com/go-swagger/go-swagger)|REST API representation tooling|
 -----------------

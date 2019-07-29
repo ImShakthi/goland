@@ -93,6 +93,7 @@ generate-mocks: ## Generate mocks to be used only for unit testing
 analyze: generate-docs lint gosec
 
 generate-docs:  ## Generates the static files to be embedded into the application + swagger.json
+	mkdir -p bin 2> /dev/null
 	swagger generate spec -b ./ -o ./bin/swagger.json --scan-models
 
 lint: ## Run the code linter

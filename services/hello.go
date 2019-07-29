@@ -1,6 +1,6 @@
 package services
 
-import "goland/constants"
+import "github.com/imshakthi/goland/constants"
 
 type HelloService interface {
 	Hello() string

@@ -2,9 +2,9 @@ package services_test
 
 import (
 	"github.com/golang/mock/gomock"
+	"github.com/imshakthi/goland/constants"
+	"github.com/imshakthi/goland/services"
 	"github.com/stretchr/testify/suite"
-	"goland/constants"
-	"goland/services"
 
 	"testing"
 )

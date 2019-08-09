@@ -7,8 +7,11 @@ import (
 )
 
 func main() {
-	configureLogging()
+	startServer()
+}
 
+func startServer() {
+	configureLogging()
 	router := InitiateRoutes()
 	err := router.Run()
 	if err != nil {

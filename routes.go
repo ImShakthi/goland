@@ -24,6 +24,8 @@ func InitiateRoutes() *gin.Engine {
 		// responses:
 		//  200: string
 		authGroup.GET("/hello", helloController.HelloWorld)
+
+		authGroup.POST("/user", helloController.CreateUser)
 	}
 
 	router.NoRoute(func(ctx *gin.Context) {

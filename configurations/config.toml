@@ -1,0 +1,7 @@
+[rdbms]
+  [rdbms.database]
+    name = "sample_db"
+    port = 5432
+  [rdbms.user]
+    name = "sakthivel"
+    password = "admin123"

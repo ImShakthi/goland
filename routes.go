@@ -1,8 +1,10 @@
 package main
 
 import (
+	"github.com/BurntSushi/toml"
 	"github.com/gin-gonic/gin"
 	"github.com/imshakthi/goland/controllers"
+	"github.com/imshakthi/goland/models"
 	"github.com/imshakthi/goland/services"
 	"net/http"
 )
@@ -10,8 +12,9 @@ import (
 func InitiateRoutes() *gin.Engine {
 	router := gin.Default()
 
+	configData := loadConfigFromToml()
 	// service
-	helloService := services.NewHelloService()
+	helloService := services.NewHelloService(configData)
 
 	// controller
 	helloController := controllers.NewHelloController(helloService)
@@ -33,4 +36,13 @@ func InitiateRoutes() *gin.Engine {
 	})
 
 	return router
+}
+
+func loadConfigFromToml() models.Config {
+	var config models.Config
+	_, err := toml.DecodeFile("configurations/config.toml", &config)
+	if err != nil {
+		panic("Error while loading TOML data=" + err.Error())
+	}
+	return config
 }

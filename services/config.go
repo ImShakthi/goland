@@ -19,7 +19,7 @@ type configService struct {
 
 func NewConfigService() ConfigService {
 	var config models.Config
-	_, err := toml.DecodeFile("configurations/config.toml", &config)
+	_, err := toml.DecodeFile("config/config.toml", &config)
 	if err != nil {
 		panic("Error while loading TOML data=" + err.Error())
 	}

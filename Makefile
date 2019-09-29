@@ -80,7 +80,7 @@ test: generate-docs generate-mocks ## Run tests
 	GIN_MODE=test $(GOBIN) test $(ALL_PACKAGES) -v -coverprofile ./$(REPORTS_DIR)/coverage
 
 valid:
-	tomlv configurations/config.toml
+	tomlv config/config.toml
 
 compile: generate-docs ## Build the app
 	$(GOBIN) build -o $(APP_EXECUTABLE)

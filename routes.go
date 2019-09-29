@@ -1,35 +1,36 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/imshakthi/goland/controllers"
+	"github.com/imshakthi/goland/repositories"
 	"github.com/imshakthi/goland/services"
+	"log"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+
+	//_ "github.com/go-pg/pg"
 	_ "github.com/lib/pq"
-	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
 func InitiateRoutes() *gin.Engine {
 	router := gin.Default()
 
-	// service
 	configService := services.NewConfigService()
+	dbConnection := getGormConnection(configService)
+
+	userRepo := repositories.NewUserRepo(dbConnection)
+
+	// service
 	helloService := services.NewHelloService()
-	userService := services.NewUserService(configService)
+	userService := services.NewUserService(configService, userRepo)
 
 	// controller
 	helloController := controllers.NewHelloController(helloService)
 	userController := controllers.NewUserController(userService)
-
-	psqlInfo := getDatabaseInfo(configService)
-	logrus.Info("psqlInfo=", psqlInfo)
-	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		panic("Error while creating database connection " + err.Error())
-	}
-	defer db.Close()
 
 	authGroup := router.Group("/app")
 	{
@@ -52,12 +53,52 @@ func InitiateRoutes() *gin.Engine {
 	return router
 }
 
-func getDatabaseInfo(configService services.ConfigService) string {
-	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+func getGormConnection(configService services.ConfigService) *gorm.DB {
+	db, err := gorm.Open("postgres", getGormDatabaseInfo(configService))
+	if err != nil {
+		log.Fatalln("error in starting postgres server: ", err)
+	}
+	defer db.Close()
+
+	return db
+}
+
+func getGormDatabaseInfo(configService services.ConfigService) string {
+	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
 		configService.GetDatabaseHost(),
 		configService.GetDatabasePort(),
 		configService.GetDatabaseUserName(),
-		configService.GetDatabasePassword(),
-		configService.GetDatabaseName())
-
+		configService.GetDatabaseName(),
+		configService.GetDatabasePassword())
 }
+
+//func getDatabaseConnection(configService services.ConfigService) *sql.DB {
+//	connStr := getDatabaseHostInfo(configService)
+//	db, err := sql.Open("postgres", connStr)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	return db
+//}
+//func getDatabaseHostInfo(configService services.ConfigService) string {
+//	return fmt.Sprintf("user=%s dbname=%s sslmode=verify-full",
+//		configService.GetDatabaseUserName(),
+//		configService.GetDatabaseName())
+//}
+
+//func getDatabaseConnection(configService services.ConfigService) *pg.DB {
+//	options := pg.Options{
+//		Addr:     getDatabaseHostInfo(configService),
+//		User:     configService.GetDatabaseUserName(),
+//		Password: configService.GetDatabasePassword(),
+//		Database: configService.GetDatabaseName(),
+//	}
+//	return pg.Connect(&options)
+//}
+//
+//func getDatabaseHostInfo(configService services.ConfigService) string {
+//	return fmt.Sprintf("%s:%d",
+//		configService.GetDatabaseHost(),
+//		configService.GetDatabasePort())
+//
+//}

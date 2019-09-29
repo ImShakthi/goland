@@ -31,5 +31,6 @@ func (ctrl userController) CreateUser(ctx *gin.Context) {
 }
 
 func (ctrl userController) GetUser(ctx *gin.Context) {
+	ctrl.userService.GetUser()
 	ctx.Done()
 }

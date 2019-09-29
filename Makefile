@@ -83,7 +83,7 @@ valid:
 	tomlv configurations/config.toml
 
 compile: generate-docs ## Build the app
-	$(GOBIN) build -i -o $(APP_EXECUTABLE)
+	$(GOBIN) build -o $(APP_EXECUTABLE)
 
 
 generate-mocks: ## Generate mocks to be used only for unit testing

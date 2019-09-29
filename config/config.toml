@@ -1,5 +1,7 @@
 [rdbms]
   [rdbms.database]
+    host = "localhost"
+    ssl_mode= "disable"
     name = "sample_db"
     port = 5432
   [rdbms.user]

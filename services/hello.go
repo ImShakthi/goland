@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/imshakthi/goland/models"
+	"github.com/imshakthi/goland/constants"
 )
 
 type HelloService interface {
@@ -9,15 +9,12 @@ type HelloService interface {
 }
 
 type helloService struct {
-	config models.Config
 }
 
-func NewHelloService(config models.Config) HelloService {
-	return &helloService{
-		config: config,
-	}
+func NewHelloService() HelloService {
+	return &helloService{}
 }
 
 func (service *helloService) Hello() string {
-	return service.config.RBMS.User.Name
+	return constants.HelloWorld
 }

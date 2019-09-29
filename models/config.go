@@ -10,8 +10,10 @@ type RBMS struct {
 }
 
 type Database struct {
-	Name string `toml:"name"`
-	Port int    `toml:"port"`
+	Host    string `toml:"host"`
+	SSLMode string `toml:"ssl_mode"`
+	Name    string `toml:"name"`
+	Port    int    `toml:"port"`
 }
 
 type User struct {

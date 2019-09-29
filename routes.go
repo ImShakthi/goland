@@ -1,23 +1,35 @@
 package main
 
 import (
-	"github.com/BurntSushi/toml"
+	"database/sql"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/imshakthi/goland/controllers"
-	"github.com/imshakthi/goland/models"
 	"github.com/imshakthi/goland/services"
+	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
 func InitiateRoutes() *gin.Engine {
 	router := gin.Default()
 
-	configData := loadConfigFromToml()
 	// service
-	helloService := services.NewHelloService(configData)
+	configService := services.NewConfigService()
+	helloService := services.NewHelloService()
+	userService := services.NewUserService(configService)
 
 	// controller
 	helloController := controllers.NewHelloController(helloService)
+	userController := controllers.NewUserController(userService)
+
+	psqlInfo := getDatabaseInfo(configService)
+	logrus.Info("psqlInfo=", psqlInfo)
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic("Error while creating database connection " + err.Error())
+	}
+	defer db.Close()
 
 	authGroup := router.Group("/app")
 	{
@@ -28,7 +40,9 @@ func InitiateRoutes() *gin.Engine {
 		//  200: string
 		authGroup.GET("/hello", helloController.HelloWorld)
 
-		authGroup.POST("/user", helloController.CreateUser)
+		authGroup.GET("/user", userController.GetUser)
+
+		authGroup.POST("/user", userController.CreateUser)
 	}
 
 	router.NoRoute(func(ctx *gin.Context) {
@@ -38,11 +52,12 @@ func InitiateRoutes() *gin.Engine {
 	return router
 }
 
-func loadConfigFromToml() models.Config {
-	var config models.Config
-	_, err := toml.DecodeFile("configurations/config.toml", &config)
-	if err != nil {
-		panic("Error while loading TOML data=" + err.Error())
-	}
-	return config
+func getDatabaseInfo(configService services.ConfigService) string {
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		configService.GetDatabaseHost(),
+		configService.GetDatabasePort(),
+		configService.GetDatabaseUserName(),
+		configService.GetDatabasePassword(),
+		configService.GetDatabaseName())
+
 }

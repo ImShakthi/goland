@@ -6,6 +6,7 @@ import (
 	"github.com/imshakthi/goland/models"
 	"github.com/imshakthi/goland/services"
 	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
 type UserController interface {
@@ -31,6 +32,12 @@ func (ctrl userController) CreateUser(ctx *gin.Context) {
 }
 
 func (ctrl userController) GetUser(ctx *gin.Context) {
-	ctrl.userService.GetUser()
-	ctx.Done()
+	id := ctx.Param("id")
+	user, err := ctrl.userService.GetUser(id)
+	if err != nil {
+		log.Errorf("error response: %s", err)
+		ctx.JSON(http.StatusNotFound, user)
+	} else {
+		ctx.JSON(http.StatusOK, user)
+	}
 }

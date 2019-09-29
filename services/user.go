@@ -1,12 +1,13 @@
 package services
 
 import (
+	"errors"
+	"github.com/imshakthi/goland/models"
 	"github.com/imshakthi/goland/repositories"
-	"github.com/sirupsen/logrus"
 )
 
 type UserService interface {
-	GetUser()
+	GetUser(name string) (models.UserResponse, error)
 }
 
 type userService struct {
@@ -21,7 +22,13 @@ func NewUserService(configService ConfigService, userRepo repositories.UserRepo)
 	}
 }
 
-func (service *userService) GetUser() {
-	userDetail := service.userRepo.GetUserByID("1")
-	logrus.Info("[INFO] user", userDetail)
+func (service *userService) GetUser(id string) (models.UserResponse, error) {
+	userDetail := service.userRepo.GetUser(id)
+	if userDetail == repositories.EmptyUserModel {
+		return models.UserResponse{}, errors.New("item not found")
+	}
+	return models.UserResponse{
+		Name: userDetail.Name,
+		Age:  userDetail.Age,
+	}, nil
 }

@@ -5,16 +5,17 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-const UserTableName = "user_details"
+const userTableName = "user_details"
 
 var (
-	ID   = "id"
-	Name = "name"
-	Age  = "age"
+	//id = "id"
+	//name = "name"
+	//age  = "age"
+	EmptyUserModel = models.UserDetail{}
 )
 
 type UserRepo interface {
-	GetUserByID(userID string) models.UserDetail
+	GetUser(userID string) models.UserDetail
 }
 
 type userRepo struct {
@@ -26,8 +27,10 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 		db: db,
 	}
 }
-func (r *userRepo) GetUserByID(userID string) models.UserDetail {
+func (r *userRepo) GetUser(userID string) models.UserDetail {
 	userDetail := models.UserDetail{}
-	r.db.Table(UserTableName).Where(ID, " = ? ", userID).Find(&userDetail)
+	r.db.Table(userTableName).
+		Where("id = ? ", userID).
+		Find(&userDetail)
 	return userDetail
 }

@@ -1,9 +1,9 @@
 [rdbms]
   [rdbms.database]
-    host = "localhost"
+    host = "    ec2-46-137-156-205.eu-west-1.compute.amazonaws.com"
     ssl_mode= "disable"
-    name = "sample_db"
+    name = "darpf5p9hnttks"
     port = 5432
   [rdbms.user]
-    name = "sakthivel"
-    password = "admin123"
+    name = "ahhjsmuriujhid"
+    password = "e187e570cf038a73819e9d8d61c35aaa26a14dfe33c85ab601c3db193b4731d3"

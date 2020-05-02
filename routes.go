@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/imshakthi/goland/controllers"
 	"github.com/imshakthi/goland/repositories"
@@ -8,7 +10,6 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
-	"net/http"
 )
 
 func InitiateRoutes(dbConnection *gorm.DB) *gin.Engine {
@@ -26,18 +27,20 @@ func InitiateRoutes(dbConnection *gorm.DB) *gin.Engine {
 	helloController := controllers.NewHelloController(helloService)
 	userController := controllers.NewUserController(userService)
 
-	authGroup := router.Group("/app")
+	router.GET("/", helloController.HelloWorld)
+
+	appGroup := router.Group("/app")
 	{
 		// swagger:route GET /app/hello
 		// Return Hello World as response.
 		// StatusCode 200: Message is fetched successfully
 		// responses:
 		//  200: string
-		authGroup.GET("/hello", helloController.HelloWorld)
+		appGroup.GET("/hello", helloController.HelloWorld)
 
-		authGroup.GET("/user/:id", userController.GetUser)
+		appGroup.GET("/user/:id", userController.GetUser)
 
-		authGroup.POST("/user", userController.CreateUser)
+		appGroup.POST("/user", userController.CreateUser)
 	}
 
 	router.NoRoute(func(ctx *gin.Context) {

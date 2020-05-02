@@ -35,12 +35,12 @@ func startServer() {
 }
 
 func configureLogging() *log.JSONFormatter {
-	formatter := new(log.JSONFormatter)
+	formatter := log.JSONFormatter{}
 	formatter.PrettyPrint = true
-	log.SetFormatter(formatter)
+	log.SetFormatter(&formatter)
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.InfoLevel)
-	return formatter
+	return &formatter
 }
 
 func getGormDatabaseInfo(configService services.ConfigService) string {

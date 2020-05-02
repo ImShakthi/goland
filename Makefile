@@ -70,7 +70,7 @@ clean:
 run: compile ## Build and start app locally (outside docker)
 	GIN_MODE=debug PORT=$(PORT) $(APP_EXECUTABLE)
 
-build: fmt test analyze compile
+build: fmt test compile
 # build: fmt valid test analyze compile
 
 fmt: ## Run the code formatter
@@ -84,7 +84,7 @@ test: generate-docs ## Run tests
 # valid:
 # 	tomlv config/config.toml
 
-compile: generate-docs ## Build the app
+compile: # generate-docs ## Build the app
 	$(GOBIN) build -o $(APP_EXECUTABLE)
 
 

@@ -76,7 +76,8 @@ build: fmt test analyze compile
 fmt: ## Run the code formatter
 	$(GOBIN) fmt $(ALL_PACKAGES)
 
-test: generate-docs generate-mocks ## Run tests
+# test: generate-docs generate-mocks ## Run tests
+test: generate-docs ## Run tests
 	mkdir -p $(REPORTS_DIR)
 	GIN_MODE=test $(GOBIN) test $(ALL_PACKAGES) -v -coverprofile ./$(REPORTS_DIR)/coverage
 

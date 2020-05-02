@@ -40,6 +40,8 @@ func InitiateRoutes(dbConnection *gorm.DB) *gin.Engine {
 
 		appGroup.GET("/user/:id", userController.GetUser)
 
+		appGroup.GET("/user/", userController.GetUsers)
+
 		appGroup.POST("/user", userController.CreateUser)
 	}
 

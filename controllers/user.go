@@ -11,6 +11,7 @@ import (
 
 type UserController interface {
 	GetUser(ctx *gin.Context)
+	GetUsers(ctx *gin.Context)
 	CreateUser(ctx *gin.Context)
 }
 
@@ -36,8 +37,18 @@ func (ctrl userController) GetUser(ctx *gin.Context) {
 	user, err := ctrl.userService.GetUser(id)
 	if err != nil {
 		log.Errorf("error response: %s", err)
-		ctx.JSON(http.StatusNotFound, user)
+		ctx.JSON(http.StatusNotFound, "")
 	} else {
 		ctx.JSON(http.StatusOK, user)
+	}
+}
+
+func (ctrl userController) GetUsers(ctx *gin.Context) {
+	users, err := ctrl.userService.GetUsers()
+	if err != nil {
+		log.Errorf("error response: %s", err)
+		ctx.JSON(http.StatusNotFound, "")
+	} else {
+		ctx.JSON(http.StatusOK, users)
 	}
 }

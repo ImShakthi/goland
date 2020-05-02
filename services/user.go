@@ -8,6 +8,7 @@ import (
 
 type UserService interface {
 	GetUser(name string) (models.UserResponse, error)
+	GetUsers() ([]models.UserResponse, error)
 }
 
 type userService struct {
@@ -31,4 +32,8 @@ func (service *userService) GetUser(id string) (models.UserResponse, error) {
 		Name: userDetail.Name,
 		Age:  userDetail.Age,
 	}, nil
+}
+
+func (service *userService) GetUsers() ([]models.UserResponse, error) {
+	return service.GetUsers()
 }

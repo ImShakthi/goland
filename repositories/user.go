@@ -16,6 +16,7 @@ var (
 
 type UserRepo interface {
 	GetUser(userID string) models.UserDetail
+	GetUsers() []models.UserDetail
 }
 
 type userRepo struct {
@@ -33,4 +34,13 @@ func (r *userRepo) GetUser(userID string) models.UserDetail {
 		Where("id = ? ", userID).
 		Find(&userDetail)
 	return userDetail
+}
+
+func (r *userRepo) GetUsers() []models.UserDetail {
+	var users []models.UserDetail
+
+	r.db.Table(userTableName).
+		Find(&users)
+
+	return users
 }

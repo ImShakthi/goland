@@ -20,7 +20,12 @@ func startServer() {
 	if dbErr != nil {
 		log.Fatalln("error in starting postgres server: ", dbErr)
 	}
-	defer dbConnection.Close()
+	defer func() {
+		err := dbConnection.Close()
+		if err != nil {
+			log.Error("unable to close database connection due to: ", err)
+		}
+	}()
 
 	router := InitiateRoutes(dbConnection)
 	err := router.Run()

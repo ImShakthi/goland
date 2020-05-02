@@ -36,7 +36,13 @@ func (s *userService) GetUser(id string) (models.UserDTO, error) {
 }
 
 func (s *userService) GetUsers() ([]models.UserDTO, error) {
-	return s.GetUsers()
+	users := s.userRepo.GetUsers()
+
+	userDTOs := make([]models.UserDTO, 0)
+	for _, user := range users {
+		userDTOs = append(userDTOs, user.MapToUserDTO())
+	}
+	return userDTOs, nil
 }
 
 func (s *userService) AddUser(user models.UserDTO) error {

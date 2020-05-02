@@ -70,7 +70,8 @@ clean:
 run: compile ## Build and start app locally (outside docker)
 	GIN_MODE=debug PORT=$(PORT) $(APP_EXECUTABLE)
 
-build: fmt valid test analyze compile
+build: fmt test analyze compile
+# build: fmt valid test analyze compile
 
 fmt: ## Run the code formatter
 	$(GOBIN) fmt $(ALL_PACKAGES)
@@ -79,8 +80,8 @@ test: generate-docs generate-mocks ## Run tests
 	mkdir -p $(REPORTS_DIR)
 	GIN_MODE=test $(GOBIN) test $(ALL_PACKAGES) -v -coverprofile ./$(REPORTS_DIR)/coverage
 
-valid:
-	tomlv config/config.toml
+# valid:
+# 	tomlv config/config.toml
 
 compile: generate-docs ## Build the app
 	$(GOBIN) build -o $(APP_EXECUTABLE)
@@ -97,7 +98,7 @@ analyze: generate-docs lint gosec
 
 generate-docs:  ## Generates the static files to be embedded into the application + swagger.json
 	mkdir -p bin 2> /dev/null
-	swagger generate spec -b ./ -o ./bin/swagger.json --scan-models
+	# swagger generate spec -b ./ -o ./bin/swagger.json --scan-models
 
 lint: ## Run the code linter
 	golangci-lint run

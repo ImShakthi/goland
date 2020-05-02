@@ -13,13 +13,11 @@ type UserService interface {
 }
 
 type userService struct {
-	configService ConfigService
 	userRepo      repositories.UserRepo
 }
 
-func NewUserService(configService ConfigService, userRepo repositories.UserRepo) UserService {
+func NewUserService(userRepo repositories.UserRepo) UserService {
 	return &userService{
-		configService: configService,
 		userRepo:      userRepo,
 	}
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/imshakthi/goland/services"
 	"github.com/jinzhu/gorm"
 	"os"
@@ -44,12 +43,13 @@ func configureLogging() *log.JSONFormatter {
 }
 
 func getGormDatabaseInfo(configService services.ConfigService) string {
-	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
-		configService.GetDatabaseHost(),
-		configService.GetDatabasePort(),
-		configService.GetDatabaseUserName(),
-		configService.GetDatabaseName(),
-		configService.GetDatabasePassword())
+	return configService.GetConnectionURI()
+	//return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
+	//	configService.GetDatabaseHost(),
+	//	configService.GetDatabasePort(),
+	//	configService.GetDatabaseUserName(),
+	//	configService.GetDatabaseName(),
+	//	configService.GetDatabasePassword())
 }
 
 //func getDatabaseConnection(configService services.ConfigService) *sql.DB {

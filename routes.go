@@ -19,9 +19,8 @@ func InitiateRoutes(dbConnection *gorm.DB) *gin.Engine {
 	userRepo := repositories.NewUserRepo(dbConnection)
 
 	// service
-	configService := services.NewConfigService()
 	helloService := services.NewHelloService()
-	userService := services.NewUserService(configService, userRepo)
+	userService := services.NewUserService(userRepo)
 
 	// controller
 	helloController := controllers.NewHelloController(helloService)

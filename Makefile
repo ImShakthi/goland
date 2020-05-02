@@ -25,7 +25,7 @@ PORT?=8000
 HOSTNAME?=localhost
 APP_URL=$(PROTOCOL)://$(HOSTNAME):$(PORT)/
 
-
+# --- heroku config starts ---
 GO_BUILD_ENV := CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 DOCKER_BUILD=$(shell pwd)/.docker_build
 DOCKER_CMD=$(DOCKER_BUILD)/goland
@@ -33,6 +33,13 @@ DOCKER_CMD=$(DOCKER_BUILD)/goland
 $(DOCKER_CMD): clean
 	mkdir -p $(DOCKER_BUILD)
 	$(GO_BUILD_ENV) go build -v -o $(DOCKER_CMD) .
+
+clean:
+	rm -rf $(DOCKER_BUILD)
+
+heroku: $(DOCKER_CMD)
+	heroku container:push web
+# --- heroku config ends ---
 
 ifeq ($(RICHGO),)
 	GOBIN=go
@@ -72,13 +79,9 @@ endif
 help:
 	@grep -E '^[a-zA-Z._-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-clean:
-	$(GOBIN) clean -r -cache -testcache
-	rm -rf $(APP_EXECUTABLE) $(REPORTS_DIR)/* $(PERF_REPORTS_DIR) /generated_mocks *.out *.log
-	rm -rf $(DOCKER_BUILD)
-
-heroku: $(DOCKER_CMD)
-	heroku container:push web
+#clean:
+#	$(GOBIN) clean -r -cache -testcache
+#	rm -rf $(APP_EXECUTABLE) $(REPORTS_DIR)/* $(PERF_REPORTS_DIR) /generated_mocks *.out *.log
 
 
 run: compile ## Build and start app locally (outside docker)

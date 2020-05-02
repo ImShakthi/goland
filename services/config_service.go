@@ -31,7 +31,7 @@ func NewConfigService() ConfigService {
 }
 
 func (s configService) GetConnectionURI() string {
-	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
+	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		viper.GetString(config.DatabaseHost),
 		viper.GetString(config.DatabasePort),
 		viper.GetString(config.DatabaseUserName),

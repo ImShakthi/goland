@@ -25,6 +25,15 @@ PORT?=8000
 HOSTNAME?=localhost
 APP_URL=$(PROTOCOL)://$(HOSTNAME):$(PORT)/
 
+
+GO_BUILD_ENV := CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+DOCKER_BUILD=$(shell pwd)/.docker_build
+DOCKER_CMD=$(DOCKER_BUILD)/goland
+
+$(DOCKER_CMD): clean
+	mkdir -p $(DOCKER_BUILD)
+	$(GO_BUILD_ENV) go build -v -o $(DOCKER_CMD) .
+
 ifeq ($(RICHGO),)
 	GOBIN=go
 else
@@ -66,6 +75,11 @@ help:
 clean:
 	$(GOBIN) clean -r -cache -testcache
 	rm -rf $(APP_EXECUTABLE) $(REPORTS_DIR)/* $(PERF_REPORTS_DIR) /generated_mocks *.out *.log
+	rm -rf $(DOCKER_BUILD)
+
+heroku: $(DOCKER_CMD)
+	heroku container:push web
+
 
 run: compile ## Build and start app locally (outside docker)
 	GIN_MODE=debug PORT=$(PORT) $(APP_EXECUTABLE)

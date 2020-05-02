@@ -3,3 +3,5 @@ vendor/
 bin/
 generated_mocks/
 reports/
+.env
+.docker_build/

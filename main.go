@@ -43,7 +43,9 @@ func configureLogging() *log.JSONFormatter {
 }
 
 func getGormDatabaseInfo(configService services.ConfigService) string {
-	return configService.GetConnectionURI()
+	uri := configService.GetConnectionURI()
+	log.Info(">>uri=", uri)
+	return uri
 	//return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
 	//	configService.GetDatabaseHost(),
 	//	configService.GetDatabasePort(),

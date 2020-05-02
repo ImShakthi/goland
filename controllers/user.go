@@ -26,9 +26,15 @@ func NewUserController(userService services.UserService) UserController {
 }
 
 func (ctrl userController) CreateUser(ctx *gin.Context) {
-	var user models.UserRequest
+	var user models.UserDTO
 	err := ctx.ShouldBindBodyWith(&user, binding.JSON)
-	log.Printf("After bind body=%v", err)
+
+	err = ctrl.userService.AddUser(user)
+	if err != nil {
+		log.Printf("unable to create user : %+v", err)
+		ctx.Abort()
+		return
+	}
 	ctx.Done()
 }
 
@@ -37,7 +43,7 @@ func (ctrl userController) GetUser(ctx *gin.Context) {
 	user, err := ctrl.userService.GetUser(id)
 	if err != nil {
 		log.Errorf("error response: %s", err)
-		ctx.JSON(http.StatusNotFound, "")
+		ctx.JSON(http.StatusNotFound, err)
 	} else {
 		ctx.JSON(http.StatusOK, user)
 	}
@@ -47,7 +53,7 @@ func (ctrl userController) GetUsers(ctx *gin.Context) {
 	users, err := ctrl.userService.GetUsers()
 	if err != nil {
 		log.Errorf("error response: %s", err)
-		ctx.JSON(http.StatusNotFound, "")
+		ctx.JSON(http.StatusNotFound, err)
 	} else {
 		ctx.JSON(http.StatusOK, users)
 	}

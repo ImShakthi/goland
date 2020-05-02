@@ -7,8 +7,9 @@ import (
 )
 
 type UserService interface {
-	GetUser(name string) (models.UserResponse, error)
-	GetUsers() ([]models.UserResponse, error)
+	GetUser(name string) (models.UserDTO, error)
+	GetUsers() ([]models.UserDTO, error)
+	AddUser(user models.UserDTO) error
 }
 
 type userService struct {
@@ -23,17 +24,21 @@ func NewUserService(configService ConfigService, userRepo repositories.UserRepo)
 	}
 }
 
-func (service *userService) GetUser(id string) (models.UserResponse, error) {
-	userDetail := service.userRepo.GetUser(id)
+func (s *userService) GetUser(id string) (models.UserDTO, error) {
+	userDetail := s.userRepo.GetUser(id)
 	if userDetail == repositories.EmptyUserModel {
-		return models.UserResponse{}, errors.New("item not found")
+		return models.UserDTO{}, errors.New("item not found")
 	}
-	return models.UserResponse{
+	return models.UserDTO{
 		Name: userDetail.Name,
 		Age:  userDetail.Age,
 	}, nil
 }
 
-func (service *userService) GetUsers() ([]models.UserResponse, error) {
-	return service.GetUsers()
+func (s *userService) GetUsers() ([]models.UserDTO, error) {
+	return s.GetUsers()
+}
+
+func (s *userService) AddUser(user models.UserDTO) error {
+	return s.userRepo.AddUser(user)
 }

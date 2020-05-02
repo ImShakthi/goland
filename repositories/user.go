@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"fmt"
 	"github.com/imshakthi/goland/models"
 	"github.com/jinzhu/gorm"
 )
@@ -17,6 +18,7 @@ var (
 type UserRepo interface {
 	GetUser(userID string) models.UserDetail
 	GetUsers() []models.UserDetail
+	AddUser(user models.UserDTO) error
 }
 
 type userRepo struct {
@@ -43,4 +45,13 @@ func (r *userRepo) GetUsers() []models.UserDetail {
 		Find(&users)
 
 	return users
+}
+
+func (r *userRepo) AddUser(user models.UserDTO) error {
+	affected := r.db.Table(userTableName).Create(user).RowsAffected
+
+	if affected == 0 {
+		return fmt.Errorf("unable to add user to database")
+	}
+	return nil
 }

@@ -1,11 +1,6 @@
 package models
 
-type UserRequest struct {
-	Name    string `json:"name" binding:"required"`
-	Checked bool   `json:"checked" binding:"required"`
-}
-
-type UserResponse struct {
-	Name string `json:"name"`
-	Age  int    `json:"age"`
+type UserDTO struct {
+	Name string `json:"name"binding:"required"`
+	Age  int    `json:"age"binding:"required"`
 }

@@ -24,8 +24,8 @@ const (
 )
 
 func (r *upVotesRepo) GetUpVoteCounts(siteId string, pageId string) (int, error) {
-	var c counter
+	var c Counter
 	r.db.Raw(GetUpVoteCountQuery, siteId, pageId).Scan(&c)
-	return c.count, nil
+	return c.Count, nil
 	//r.db.Table("votes").Where("page_id = ?", pageId).Count(&count)
 }

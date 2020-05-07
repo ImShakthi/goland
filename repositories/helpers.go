@@ -1,5 +1,5 @@
 package repositories
 
-type counter struct {
-	count int
+type Counter struct {
+	Count int
 }

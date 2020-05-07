@@ -38,5 +38,5 @@ func (ctrl upVoteController) GetUpVotesCount(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	ctx.JSON(http.StatusOK, votes)
+	ctx.JSON(http.StatusOK, models.GetUpVoteResponse{Votes: votes})
 }

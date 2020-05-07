@@ -9,3 +9,7 @@ type GetUpVoteRequest struct {
 	PageId string `json:"pageid"binding:"required"`
 	SiteId string `json:"siteid"binding:"required"`
 }
+
+type GetUpVoteResponse struct {
+	Votes int `json:"votes"`
+}

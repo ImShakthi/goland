@@ -27,9 +27,15 @@ const (
 )
 
 func (r *upVotesRepo) GetUpVoteCounts(siteId string, pageId string) (count int, err error) {
-	//r.db.Exec(GetUpVoteCountQuery, siteId, pageId).Count(&count)
+	type result struct {
+		Count int
+	}
 
-	r.db.Table("votes").Where("page_id = ?", pageId).Count(&count)
+	var res result
+	r.db.Raw(GetUpVoteCountQuery, siteId, pageId).Scan(&res)
+	count = res.Count
+
+	//r.db.Table("votes").Where("page_id = ?", pageId).Count(&count)
 
 	return
 }

@@ -2,8 +2,6 @@ package services
 
 import (
 	"fmt"
-	"github.com/imshakthi/goland/config"
-	"github.com/spf13/viper"
 )
 
 type ConfigService interface {
@@ -31,13 +29,19 @@ func NewConfigService() ConfigService {
 }
 
 func (s configService) GetConnectionURI() string {
-	return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
-		viper.GetString(config.DatabaseHost),
-		viper.GetString(config.DatabasePort),
-		viper.GetString(config.DatabaseUserName),
-		viper.GetString(config.DatabaseName),
-		viper.GetString(config.DatabasePassword))
+	return fmt.Sprintf("host=%s port=5432 user=%s dbname=%s password=%s sslmode=disable",
+		"ec2-54-246-85-151.eu-west-1.compute.amazonaws.com",
+		"pphklugwpalshk",
+		"d5ntof8uiq9jb9",
+		"4422401351c2b73c2a3ba98f34abee7b27a840b4c2ae6f6c81d57db390afc276")
+
+	//viper.GetString(config.DatabaseHost),
+	//viper.GetString(config.DatabasePort),
+	//viper.GetString(config.DatabaseUserName),
+	//viper.GetString(config.DatabaseName),
+	//viper.GetString(config.DatabasePassword))
 }
+
 //
 //func (s configService) GetRBMS() models.RBMS {
 //	return s.config.RBMS

@@ -23,7 +23,7 @@ const (
 				WHERE v.page_id = p.page_id 
 				AND p.site_id = s.site_id
 				AND p.site_id = ?
-				AND p.page_id = ?;`
+				AND p.page_id = ?`
 )
 
 func (r *upVotesRepo) GetUpVoteCounts(siteId string, pageId string) (count int, err error) {

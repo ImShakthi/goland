@@ -17,6 +17,7 @@ func InitiateRoutes(dbConnection *gorm.DB) *gin.Engine {
 
 	// repository
 	userRepo := repositories.NewUserRepo(dbConnection)
+	upVotesRepo := repositories.NewUpVotesRepo(dbConnection)
 
 	// service
 	helloService := services.NewHelloService()
@@ -25,6 +26,7 @@ func InitiateRoutes(dbConnection *gorm.DB) *gin.Engine {
 	// controller
 	helloController := controllers.NewHelloController(helloService)
 	userController := controllers.NewUserController(userService)
+	votesController := controllers.NewUpVotesController(upVotesRepo)
 
 	router.GET("/", helloController.HelloWorld)
 
@@ -42,6 +44,8 @@ func InitiateRoutes(dbConnection *gorm.DB) *gin.Engine {
 		appGroup.GET("/user/", userController.GetUsers)
 
 		appGroup.POST("/user", userController.CreateUser)
+
+		appGroup.POST("/upvotes", votesController.GetUpVotesCount)
 	}
 
 	router.NoRoute(func(ctx *gin.Context) {
